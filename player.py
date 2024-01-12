@@ -6,14 +6,14 @@ class Player(pygame.sprite.Sprite):
         super().__init__(group)
         
         # display vars
-        self.image = pygame.Surface((50, 50))
-        self.image.fill('green')
+        self.image = pygame.image.load('resources/graphics/Player.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (64, 64))
         self.rect = self.image.get_rect(center = pos)
         
         # movement vars
         self.direction = pygame.math.Vector2()
         self.pos = pygame.math.Vector2(self.rect.center)
-        self.speed = 100
+            
         
     def input(self):
         keys_pressed = pygame.key.get_pressed()
@@ -32,10 +32,16 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x = 0
         
-    def move(self, time_diff):
-        self.pos += self.direction * self.speed * time_diff
-        self.rect.center = self.pos
+    def move(self, time_diff, speed):
+        if self.direction.magnitude() > 0:
+            self.direction = self.direction.normalize()
+        
+        self.pos.x += self.direction.x * speed * time_diff
+        self.rect.centerx = self.pos.x
+        
+        self.pos.y += self.direction.y * speed * time_diff
+        self.rect.centery = self.pos.y
         
     def update(self, time_diff):
         self.input()
-        self.move(time_diff)
+        self.move(time_diff, 300)
