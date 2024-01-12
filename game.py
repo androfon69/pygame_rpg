@@ -19,10 +19,10 @@ class Game:
                     pygame.quit()
                     sys.exit()
             
-            time_diff = self.clock.tick(FPS) / 1000
-            self.render.run(time_diff)
-            
+            self.screen.fill('white')
+            self.render.run()
             pygame.display.update()
+            self.clock.tick(FPS)
 
             
 if __name__ == '__main__':

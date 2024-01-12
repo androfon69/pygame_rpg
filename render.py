@@ -20,9 +20,9 @@ class Render:
                 if col == 'x':
                     Tile((x_offset, y_offset), [self.visible_sprites, self.obstacle_sprites])
                 elif col == 'p':
-                    Player((x_offset, y_offset), self.visible_sprites)
+                    self.player = Player((x_offset, y_offset), [self.visible_sprites], self.obstacle_sprites)
                 
-    def run(self, time_diff):
+    def run(self):
         self.base_surface.fill('white')
         self.visible_sprites.draw(self.base_surface)
-        self.visible_sprites.update(time_diff)
+        self.visible_sprites.update()
