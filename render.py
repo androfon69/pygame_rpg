@@ -6,7 +6,6 @@ from global_vars import *
 class Render:
     def __init__(self):
         self.base_surface = pygame.display.get_surface()
-        self.base_surface.fill('white')
         self.obstacle_sprites = pygame.sprite.Group()
         self.visible_sprites = pygame.sprite.Group()
         
@@ -23,6 +22,5 @@ class Render:
                     self.player = Player((x_offset, y_offset), [self.visible_sprites], self.obstacle_sprites)
                 
     def run(self):
-        self.base_surface.fill('white')
         self.visible_sprites.draw(self.base_surface)
         self.visible_sprites.update()

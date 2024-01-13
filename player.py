@@ -8,11 +8,10 @@ class Player(pygame.sprite.Sprite):
         # display vars
         self.image = pygame.image.load('resources/graphics/Player.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (64, 64))
-        self.rect = self.image.get_rect(center = pos)
+        self.rect = self.image.get_rect(topleft = pos)
         
         # movement vars
         self.direction = pygame.math.Vector2()
-        self.pos = pygame.math.Vector2(self.rect.center)
         self.speed = 5
             
         self.obstacle_sprites = obstacle_sprites
@@ -38,12 +37,11 @@ class Player(pygame.sprite.Sprite):
         if self.direction.magnitude() > 0:
             self.direction = self.direction.normalize()
         
-        self.pos.x += self.direction.x * speed
-        self.rect.x = self.pos.x
+        self.rect.x += self.direction.x * speed
         self.detect_collision('horizontal')
         
-        self.pos.y += self.direction.y * speed
-        self.rect.y = self.pos.y
+        
+        self.rect.y += self.direction.y * speed
         self.detect_collision('vertical')
         
     def detect_collision(self, direction):
@@ -53,7 +51,7 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.x > 0:
                         # moving right -> adjust left
                         self.rect.right = sprite.rect.left
-                    if self.direction.x < 0:
+                    elif self.direction.x < 0:
                         # momving left -> adjust right
                         self.rect.left = sprite.rect.right
                         
@@ -63,7 +61,7 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y > 0:
                         # moving down -> adjust up
                         self.rect.bottom = sprite.rect.top
-                    if self.direction.y < 0:
+                    elif self.direction.y < 0:
                         # momving up -> adjust down
                         self.rect.top = sprite.rect.bottom
         
@@ -71,4 +69,3 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.input()
         self.move(self.speed)
-        self.detect_collision('vertical')
