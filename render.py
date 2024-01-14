@@ -1,6 +1,7 @@
 import pygame
 from player import Player
 from tile import Tile
+from weapon import Weapon
 from global_vars import *
 from utils import *
 from random import choice
@@ -8,6 +9,7 @@ from random import choice
 class Render:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
+        
         self.obstacle_sprites = pygame.sprite.Group()
         self.visible_sprites = CameraGroup()
         
@@ -15,14 +17,18 @@ class Render:
     
     # render tilemap
     # each tile sits at (j * TILESIZE, i * TILESIZE)
+    # this method renders the entire map + player
     def create_map(self):
+        # positions of all assets
         layouts = {
             'boundary' : import_csv_layout('resources/graphics/map_csvs/Map_Blocks.csv'),
             'foliage' : import_csv_layout('resources/graphics/map_csvs/Map_Foliage.csv'),
             'objects' : import_csv_layout('resources/graphics/map_csvs/Map_Objects.csv')
         }
+        # renders of all assets
         graphics = {
-            'foliage' : import_surface_folder('resources/graphics/grass')
+            'foliage' : import_surface_folder('resources/graphics/grass'),
+            'objects' : import_surface_folder('resources/graphics/objects')
         }
         
         # render all map objects
@@ -35,14 +41,18 @@ class Render:
                         if label == 'boundary': # invisible map boundary
                             Tile((x_offset, y_offset), [self.obstacle_sprites], 'invisible')
                         if label == 'foliage': # visible foliage
-                            random_foliage = choice(graphics['foliage'])
+                            random_foliage = choice(graphics['foliage']) 
                             Tile((x_offset, y_offset), [self.visible_sprites, self.obstacle_sprites], 'foliage', random_foliage)
                         if label == 'objects': # collidable objects
-                            pass
+                            # object files are named {index}.png to more easily get and render them
+                            object_surface = graphics['objects'][int(col)]
+                            Tile((x_offset, y_offset), [self.visible_sprites, self.obstacle_sprites], 'object', object_surface)
                             
-        self.player = Player((1600, 1900), [self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((1600, 1900), [self.visible_sprites], self.obstacle_sprites, self.create_attack)
                 
-                
+    def create_attack(self):
+        Weapon(self.player, [self.visible_sprites])
+    
     def run(self):
         self.visible_sprites.draw_camera_group(self.player)
         self.visible_sprites.update()
@@ -68,6 +78,7 @@ class CameraGroup(pygame.sprite.Group):
         self.pos_offset.x = player.rect.centerx - self.width
         self.pos_offset.y = player.rect.centery - self.height
         
+        # move background
         floor_offset = self.floor_rect.topleft - self.pos_offset
         self.display_surface.blit(self.floor_surface, floor_offset)
         

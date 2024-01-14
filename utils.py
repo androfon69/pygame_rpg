@@ -13,11 +13,15 @@ def import_csv_layout(csv_path):
     
 def import_surface_folder(images_path):
     surface_list = []
+    file_list = []
     
-    for _,__,files in walk('images_path'):
+    for _,__,files in walk(images_path):
         for image in files:
-            full_path = images_path + '/' + image
-            image_surface = pygame.image.load(full_path).convert_alpha()
-            surface_list.append(image_surface)
-    
+            file_list.append(image)
+        
+    for image in sorted(file_list):
+        full_path = images_path + '/' + image
+        image_surface = pygame.image.load(full_path).convert_alpha()
+        surface_list.append(image_surface)
+        
     return surface_list
